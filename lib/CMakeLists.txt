@@ -7,5 +7,8 @@ target_link_libraries(OpenGL PUBLIC glfw)
 find_package(OpenGL REQUIRED)
 target_link_libraries(OpenGL PUBLIC OpenGL::GL)
 
+
+set(glew-cmake_BUILD_SHARED FALSE)
+set(glew-ONLY_LIBS ON)
 add_subdirectory(glew)
-target_link_libraries(OpenGL PUBLIC GLEW)
+target_link_libraries(OpenGL PUBLIC libglew_static)

@@ -1,8 +1,16 @@
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <iostream>
 
 int main()
 {
     GLFWwindow* window;
+
+    // Initialize GLEW
+    if(glewInit() != GLEW_OK) {
+        std::cerr << "Glew was not initialized." << std::endl;
+    }
 
     /* Initialize the library */
     if (!glfwInit())
