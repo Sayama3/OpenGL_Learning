@@ -7,11 +7,6 @@ int main()
 {
     GLFWwindow* window;
 
-    // Initialize GLEW
-    if(glewInit() != GLEW_OK) {
-        std::cerr << "Glew was not initialized." << std::endl;
-    }
-
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -26,6 +21,13 @@ int main()
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    // Initialize GLEW
+    auto glewErr = glewInit();
+    if(glewErr != GLEW_OK) {
+        std::cerr << "GLEW error (" << glewErr << "): " << glewGetErrorString(glewErr) << std::endl;
+        return -1;
+    }
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
