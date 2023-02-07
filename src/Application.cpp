@@ -2,6 +2,62 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <optional>
+
+static std::optional<unsigned int> CompileShader(unsigned int type, const std::string& source)
+{
+    unsigned int id = glCreateShader(type);
+    const char* src = source.c_str();
+    glShaderSource(id, 1, &src, nullptr);
+    glCompileShader(id);
+
+    //TODO: Error Handling.
+    // Query the result :
+    int result;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    if (result == GL_FALSE)
+    {
+        int length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char*) alloca(length * sizeof(char));
+        glGetShaderInfoLog(id, length, nullptr, message);
+        std::cerr << "Failed to compile "<< (type == GL_VERTEX_SHADER ? "vertex" : (type == GL_FRAGMENT_SHADER ? "fragment" : "a")) <<" shader!" << std::endl;
+        std::cerr << message << std::endl;
+        glDeleteShader(id);
+        return {};
+    }
+
+    return id;
+}
+
+/// Create a shader from source code.
+/// \param vertexShader the source code of the vertex shader.
+/// \param fragmentShader the source code of the fragment shader.
+/// \return The id of the shader in OpenGL.
+static std::optional<unsigned int> CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+{
+    unsigned int program = glCreateProgram();
+
+    std::optional<unsigned int> vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    std::optional<unsigned int> fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+    if(!vs.has_value() || !fs.has_value())
+    {
+        return {};
+    }
+
+    glAttachShader(program, vs.value());
+    glAttachShader(program, fs.value());
+
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    // Delete the shader as we now have created the program.
+    glDeleteShader(vs.value());
+    glDeleteShader(fs.value());
+
+    return program;
+}
 
 int main()
 {
@@ -54,6 +110,40 @@ int main()
     // The size is in bytes. Cf documentation (i.e. https://docs.gl)
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), position, GL_STATIC_DRAW);
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+
+    std::string vertexShader = R"glsl(
+#version 330 core
+
+layout(location = 0) in vec4 position;
+
+void main()
+{
+    gl_Position = position;
+}
+)glsl";
+
+    std::string fragmentShader = R"glsl(
+#version 330 core
+
+layout(location = 0) out vec4 color;
+
+void main()
+{
+    color = vec4(1.0, 0.0, 0.0, 1.0);
+}
+)glsl";
+
+    std::optional<unsigned int> program = CreateShader(vertexShader, fragmentShader);
+
+    if(!program.has_value()) {
+        glfwTerminate();
+        return -1;
+    }
+
+    glUseProgram(program.value());
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -74,6 +164,7 @@ int main()
         glfwPollEvents();
     }
 
+    glDeleteProgram(program.value());
     glfwTerminate();
     return 0;
 }
