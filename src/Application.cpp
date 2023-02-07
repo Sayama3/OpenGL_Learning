@@ -1,8 +1,21 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <fstream>
 #include <iostream>
 #include <optional>
+#include <string>
+#include <sstream>
+
+static std::string ReadFile(std::string path) {
+    std::ifstream fileStream(path);
+    std::stringstream file;
+    std::string line;
+    while (std::getline(fileStream, line)) {
+        file << line << "\n";
+    }
+    return file.str();
+}
 
 static std::optional<unsigned int> CompileShader(unsigned int type, const std::string& source)
 {
@@ -113,27 +126,8 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 
-    std::string vertexShader = R"glsl(
-#version 330 core
-
-layout(location = 0) in vec4 position;
-
-void main()
-{
-    gl_Position = position;
-}
-)glsl";
-
-    std::string fragmentShader = R"glsl(
-#version 330 core
-
-layout(location = 0) out vec4 color;
-
-void main()
-{
-    color = vec4(1.0, 0.0, 0.0, 1.0);
-}
-)glsl";
+    std::string vertexShader = ReadFile("resources/shaders/shader.vert");
+    std::string fragmentShader = ReadFile("resources/shaders/shader.frag");
 
     std::optional<unsigned int> program = CreateShader(vertexShader, fragmentShader);
 
