@@ -100,28 +100,47 @@ int main()
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
+    const unsigned int NumberOfVertices = 8;
+    const unsigned int NumberOfIndex = 6;
+
     // Creating the vertices array
-    float position[6] = {
-            -0.5f,-0.5f,
-            0.0f,0.5f,
-            0.5f,-0.5f
+    float vertices[NumberOfVertices] = {
+            -0.5f,-0.5f, //0
+            0.5f,-0.5f, //1
+            0.5f,0.5f, //2
+            -0.5f,0.5f, //3
     };
 
-    /* Create a bufferId */
+    // it needs to be an unsigned int !
+    unsigned int indexes[NumberOfIndex] = {
+            0,1,2,
+            2, 3, 0
+    };
 
-    // the id of the bufferId.
-    // In openGL, everything get attribute an ID, so, this is the ID of the bufferId
-    unsigned int bufferId;
+    /* Create a verticesBufferId */
 
-    // Asking for a bufferId and giving the pointer to the bufferId variable.
-    glGenBuffers(1, &bufferId);
+    // the id of the verticesBufferId.
+    // In openGL, everything get attribute an ID, so, this is the ID of the verticesBufferId
+
+    const unsigned int NumberOfBuffer = 2;
+    unsigned int bufferIds[NumberOfBuffer];
+    unsigned int& verticesBufferId = bufferIds[0];
+    unsigned int& indexBufferId = bufferIds[1];
+
+    // Asking for a verticesBufferId and giving the pointer to the verticesBufferId variable.
+    glGenBuffers(NumberOfBuffer, bufferIds);
+
 
     // Selecting (binding) the buffer for opengl to know we want to use it and how to use it.
-    glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+    glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
 
     // Say to OpenGL how large the buffer is (and whether we fill it)
     // The size is in bytes. Cf documentation (i.e. https://docs.gl)
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), position, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, NumberOfVertices * sizeof(float), vertices, GL_STATIC_DRAW);
+
+    // Add the index buffer in CG
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumberOfIndex * sizeof(unsigned int), indexes, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
@@ -144,12 +163,7 @@ int main()
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw without an index buffer.
-        // Here it's 3 vertices as a vertices is 2 float. (and we set 6 floats so 3 vertices)
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        // The sames things but with index buffer !
-        // glDrawElements(GL_TRIANGLES, 3, GL_FLOAT, [...]);
+        glDrawElements(GL_TRIANGLES, NumberOfIndex, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
