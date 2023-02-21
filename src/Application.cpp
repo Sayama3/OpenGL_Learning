@@ -1,6 +1,5 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -8,7 +7,11 @@
 #include <sstream>
 #include "debug-trap.h"
 
+#ifndef PSNIP_NDEBUG
 #define ASSERT(x) if (!(x)) psnip_trap()
+#else
+#define ASSERT(x) (x)
+#endif
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 
 static void GLClearError()
@@ -19,7 +22,7 @@ static void GLClearError()
 static bool GLLogCall(const char* function = "", const char* file = __FILE__, int line = __LINE__)
 {
     bool dontHasError = true;
-    while (GLenum error = glGetError())
+    while (GLenum error = glGetError() != GL_NO_ERROR)
     {
         dontHasError = false;
         std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
@@ -27,7 +30,7 @@ static bool GLLogCall(const char* function = "", const char* file = __FILE__, in
     return dontHasError;
 }
 
-static std::string ReadFile(std::string path) {
+static std::string ReadFile(const char* path) {
     std::ifstream fileStream(path);
     std::stringstream file;
     std::string line;
