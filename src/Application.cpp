@@ -103,6 +103,10 @@ int main()
     if (!glfwInit())
         return -1;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (!window)
@@ -125,11 +129,12 @@ int main()
 
     GLCall(std::cout << glGetString(GL_VERSION) << std::endl);
 
-    const unsigned int NumberOfVertices = 8;
+    const unsigned int NumberOfVertices = 4;
+    const unsigned int NumberOfParameterPerVertices = 2;
     const unsigned int NumberOfIndex = 6;
 
     // Creating the vertices array
-    float vertices[NumberOfVertices] = {
+    float vertices[NumberOfVertices * NumberOfParameterPerVertices] = {
             -0.5f,-0.5f, //0
             0.5f,-0.5f, //1
             0.5f,0.5f, //2
@@ -142,11 +147,15 @@ int main()
             2, 3, 0
     };
 
+    // Creating the Vertex Array Object
+    unsigned int vao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
+
     /* Create a verticesBufferId */
 
     // the id of the verticesBufferId.
     // In openGL, everything get attribute an ID, so, this is the ID of the verticesBufferId
-
     const unsigned int NumberOfBuffer = 2;
     unsigned int bufferIds[NumberOfBuffer];
     unsigned int& verticesBufferId = bufferIds[0];
@@ -161,14 +170,15 @@ int main()
 
     // Say to OpenGL how large the buffer is (and whether we fill it)
     // The size is in bytes. Cf documentation (i.e. https://docs.gl)
-    GLCall(glBufferData(GL_ARRAY_BUFFER, NumberOfVertices * sizeof(float), vertices, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, NumberOfVertices * NumberOfParameterPerVertices * sizeof(float), vertices, GL_STATIC_DRAW));
 
     // Add the index buffer in CG
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumberOfIndex * sizeof(unsigned int), indexes, GL_STATIC_DRAW));
 
     GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr));
+    // Link the current buffer to the Vertex Arrays Object. (l176 or something)
+    GLCall(glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * NumberOfParameterPerVertices, nullptr));
 
     std::string vertexShader = ReadFile("resources/shaders/shader.vert");
     std::string fragmentShader = ReadFile("resources/shaders/shader.frag");
