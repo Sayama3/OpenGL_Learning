@@ -42,24 +42,24 @@ static std::string ReadFile(const char* path) {
 
 static std::optional<unsigned int> CompileShader(unsigned int type, const std::string& source)
 {
-    unsigned int id = glCreateShader(type);
+    GLCall(unsigned int id = glCreateShader(type));
     const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
+    GLCall(glShaderSource(id, 1, &src, nullptr));
+    GLCall(glCompileShader(id));
 
     //TODO: Error Handling.
     // Query the result :
     int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
     if (result == GL_FALSE)
     {
         int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*) alloca(length * sizeof(char));
-        glGetShaderInfoLog(id, length, nullptr, message);
+        GLCall(glGetShaderInfoLog(id, length, nullptr, message));
         std::cerr << "Failed to compile "<< (type == GL_VERTEX_SHADER ? "vertex" : (type == GL_FRAGMENT_SHADER ? "fragment" : "a")) <<" shader!" << std::endl;
         std::cerr << message << std::endl;
-        glDeleteShader(id);
+        GLCall(glDeleteShader(id));
         return {};
     }
 
@@ -72,7 +72,7 @@ static std::optional<unsigned int> CompileShader(unsigned int type, const std::s
 /// \return The id of the shader in OpenGL.
 static std::optional<unsigned int> CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-    unsigned int program = glCreateProgram();
+    GLCall(unsigned int program = glCreateProgram());
 
     std::optional<unsigned int> vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     std::optional<unsigned int> fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -82,15 +82,15 @@ static std::optional<unsigned int> CreateShader(const std::string& vertexShader,
         return {};
     }
 
-    glAttachShader(program, vs.value());
-    glAttachShader(program, fs.value());
+    GLCall(glAttachShader(program, vs.value()));
+    GLCall(glAttachShader(program, fs.value()));
 
-    glLinkProgram(program);
-    glValidateProgram(program);
+    GLCall(glLinkProgram(program));
+    GLCall(glValidateProgram(program));
 
     // Delete the shader as we now have created the program.
-    glDeleteShader(vs.value());
-    glDeleteShader(fs.value());
+    GLCall(glDeleteShader(vs.value()));
+    GLCall(glDeleteShader(fs.value()));
 
     return program;
 }
@@ -114,6 +114,8 @@ int main()
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1);
+
     // Initialize GLEW NEED TO HAVE A VALID OPENGL CONTEXT TO INITIALIZE GLEW !!!
     auto glewErr = glewInit();
     if(glewErr != GLEW_OK) {
@@ -121,7 +123,7 @@ int main()
         return -1;
     }
 
-    std::cout << glGetString(GL_VERSION) << std::endl;
+    GLCall(std::cout << glGetString(GL_VERSION) << std::endl);
 
     const unsigned int NumberOfVertices = 8;
     const unsigned int NumberOfIndex = 6;
@@ -180,13 +182,30 @@ int main()
 
     GLCall(glUseProgram(program.value()));
 
+    GLCall(int colorUniformLocation = glGetUniformLocation(program.value(), "u_Color"));
+    ASSERT(colorUniformLocation != -1);
+    GLCall(glUniform4f(colorUniformLocation, 0.0, 1.0, 0.0, 1.0));
+
+    float r = 0.0;
+    float increment= 0.05f;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        GLCall(glDrawElements(GL_TRIANGLES, NumberOfIndex, GL_INT, nullptr));
+
+        GLCall(glUniform4f(colorUniformLocation, r, 1.0, 0.0, 1.0));
+        GLCall(glDrawElements(GL_TRIANGLES, NumberOfIndex, GL_UNSIGNED_INT, nullptr));
+
+        if(r >= 1.0f) {
+            increment = -0.01;
+        } else if (r <= 0.0f) {
+            increment = 0.01;
+        }
+
+        r += increment;
 
         /* Swap front and back buffers */
         GLCall(glfwSwapBuffers(window));
