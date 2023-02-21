@@ -6,4 +6,6 @@ target_sources(OpenGL PRIVATE
         Renderer.cpp
         VertexBuffer.cpp
         Display.cpp
+        VertexArray.cpp
+        VertexBufferLayout.cpp
         )

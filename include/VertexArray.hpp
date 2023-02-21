@@ -4,24 +4,23 @@
 
 #pragma once
 
+#include "VertexBuffer.hpp"
+#include "VertexBufferLayout.hpp"
+
 namespace Sayama {
     namespace OpenGLLearning {
 
-        class IndexBuffer {
+        class VertexArray {
         private:
             unsigned int m_RendererId;
-            unsigned int m_Count;
         public:
-            IndexBuffer(const unsigned int *data, unsigned int count);
+            VertexArray();
 
-            ~IndexBuffer();
+            ~VertexArray();
 
+            void AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout);
             void Bind() const;
-
             void Unbind() const;
-
-            unsigned int GetType() const;
-            unsigned int GetCount() const;
         };
 
     } // Sayama

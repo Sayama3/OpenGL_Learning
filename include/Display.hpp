@@ -12,19 +12,22 @@ namespace Sayama {
 
         class Display {
         private:
-            GLFWwindow* m_Window;
-            const char* m_Name;
+            GLFWwindow *m_Window;
+            const char *m_Name;
             int m_Width;
             int m_Height;
         public:
-            Display(const char* name = "window", int width = 640, int height = 480);
+            Display(const char *name = "window", int width = 640, int height = 480);
+
             ~Display();
 
             bool ShouldClose() const;
+
             void SwapBuffers() const;
+
             void PollEvents() const;
 
-            GLFWwindow* GetWindow() const;
+            GLFWwindow *GetWindow() const;
         };
 
     } // Sayama

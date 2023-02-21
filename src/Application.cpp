@@ -9,8 +9,9 @@
 #include "IndexBuffer.hpp"
 #include "VertexBuffer.hpp"
 #include "Display.hpp"
+#include "VertexArray.hpp"
 
-static std::string ReadFile(const char* path) {
+static std::string ReadFile(const char *path) {
     std::ifstream fileStream(path);
     std::stringstream file;
     std::string line;
@@ -20,10 +21,9 @@ static std::string ReadFile(const char* path) {
     return file.str();
 }
 
-static std::optional<unsigned int> CompileShader(unsigned int type, const std::string& source)
-{
+static std::optional<unsigned int> CompileShader(unsigned int type, const std::string &source) {
     GLCall(unsigned int id = glCreateShader(type));
-    const char* src = source.c_str();
+    const char *src = source.c_str();
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
 
@@ -31,13 +31,14 @@ static std::optional<unsigned int> CompileShader(unsigned int type, const std::s
     // Query the result :
     int result;
     GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
-    if (result == GL_FALSE)
-    {
+    if (result == GL_FALSE) {
         int length;
         GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-        char* message = (char*) alloca(length * sizeof(char));
+        char *message = (char *) alloca(length * sizeof(char));
         GLCall(glGetShaderInfoLog(id, length, nullptr, message));
-        std::cerr << "Failed to compile "<< (type == GL_VERTEX_SHADER ? "vertex" : (type == GL_FRAGMENT_SHADER ? "fragment" : "a")) <<" shader!" << std::endl;
+        std::cerr << "Failed to compile "
+                  << (type == GL_VERTEX_SHADER ? "vertex" : (type == GL_FRAGMENT_SHADER ? "fragment" : "a"))
+                  << " shader!" << std::endl;
         std::cerr << message << std::endl;
         GLCall(glDeleteShader(id));
         return {};
@@ -50,15 +51,14 @@ static std::optional<unsigned int> CompileShader(unsigned int type, const std::s
 /// \param vertexShader the source code of the vertex shader.
 /// \param fragmentShader the source code of the fragment shader.
 /// \return The id of the shader in OpenGL.
-static std::optional<unsigned int> CreateShaderProgram(const std::string& vertexShader, const std::string& fragmentShader)
-{
+static std::optional<unsigned int>
+CreateShaderProgram(const std::string &vertexShader, const std::string &fragmentShader) {
     GLCall(unsigned int program = glCreateProgram());
 
     std::optional<unsigned int> vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     std::optional<unsigned int> fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-    if(!vs.has_value() || !fs.has_value())
-    {
+    if (!vs.has_value() || !fs.has_value()) {
         return {};
     }
 
@@ -75,36 +75,31 @@ static std::optional<unsigned int> CreateShaderProgram(const std::string& vertex
     return program;
 }
 
-int main()
-{
+int main() {
     Sayama::OpenGLLearning::Display display;
-
-
-    // Creating the Vertex Array Object
-    unsigned int vao;
-    GLCall(glGenVertexArrays(1, &vao));
-    GLCall(glBindVertexArray(vao));
 
     const unsigned int NumberOfVertices = 4;
     const unsigned int NumberOfParameterPerVertices = 2;
 
     // Creating the vertices array
     float vertices[NumberOfVertices * NumberOfParameterPerVertices] = {
-            -0.5f,-0.5f, //0
-            0.5f,-0.5f, //1
-            0.5f,0.5f, //2
-            -0.5f,0.5f, //3
+            -0.5f, -0.5f, //0
+            0.5f, -0.5f, //1
+            0.5f, 0.5f, //2
+            -0.5f, 0.5f, //3
     };
 
-    Sayama::OpenGLLearning::VertexBuffer vertexBuffer(vertices, NumberOfVertices * NumberOfParameterPerVertices * sizeof(float));
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * NumberOfParameterPerVertices, nullptr));
+    Sayama::OpenGLLearning::VertexArray va;
+    Sayama::OpenGLLearning::VertexBuffer vertexBuffer(vertices,NumberOfVertices * NumberOfParameterPerVertices * sizeof(float));
+    Sayama::OpenGLLearning::VertexBufferLayout vbl;
+    vbl.Push<float>(2);
+    va.AddBuffer(vertexBuffer, vbl);
 
     const unsigned int NumberOfIndex = 6;
 
     // it needs to be an unsigned int !
     unsigned int indices[NumberOfIndex] = {
-            0,1,2,
+            0, 1, 2,
             2, 3, 0
     };
 
@@ -114,7 +109,7 @@ int main()
     std::string fragmentShader = ReadFile("resources/shaders/shader.frag");
     std::optional<unsigned int> program = CreateShaderProgram(vertexShader, fragmentShader);
 
-    if(!program.has_value()) {
+    if (!program.has_value()) {
         glfwTerminate();
         return -1;
     }
@@ -126,22 +121,22 @@ int main()
     GLCall(glUniform4f(colorUniformLocation, 0.0, 1.0, 0.0, 1.0));
 
     float r = 0.0;
-    float increment= 0.05f;
+    float increment = 0.05f;
 
     /* Loop until the user closes the window */
-    while (!display.ShouldClose())
-    {
+    while (!display.ShouldClose()) {
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         GLCall(glUseProgram(program.value()));
         GLCall(glUniform4f(colorUniformLocation, r, 1.0, 0.0, 1.0));
 
-        GLCall(glBindVertexArray(vao));
+        va.Bind();
+        indexBuffer.Bind();
 
-        GLCall(glDrawElements(GL_TRIANGLES, NumberOfIndex, GL_UNSIGNED_INT, nullptr));
+        GLCall(glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), indexBuffer.GetType(), nullptr));
 
-        if(r >= 1.0f) {
+        if (r >= 1.0f) {
             increment = -0.01;
         } else if (r <= 0.0f) {
             increment = 0.01;
