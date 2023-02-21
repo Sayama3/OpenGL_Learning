@@ -6,6 +6,26 @@
 #include <optional>
 #include <string>
 #include <sstream>
+#include "debug-trap.h"
+
+#define ASSERT(x) if (!(x)) psnip_trap()
+#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError()
+{
+    while(glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* function = "", const char* file = __FILE__, int line = __LINE__)
+{
+    bool dontHasError = true;
+    while (GLenum error = glGetError())
+    {
+        dontHasError = false;
+        std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
+    }
+    return dontHasError;
+}
 
 static std::string ReadFile(std::string path) {
     std::ifstream fileStream(path);
@@ -81,7 +101,7 @@ int main()
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
@@ -128,22 +148,22 @@ int main()
     unsigned int& indexBufferId = bufferIds[1];
 
     // Asking for a verticesBufferId and giving the pointer to the verticesBufferId variable.
-    glGenBuffers(NumberOfBuffer, bufferIds);
+    GLCall(glGenBuffers(NumberOfBuffer, bufferIds));
 
 
     // Selecting (binding) the buffer for opengl to know we want to use it and how to use it.
-    glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId));
 
     // Say to OpenGL how large the buffer is (and whether we fill it)
     // The size is in bytes. Cf documentation (i.e. https://docs.gl)
-    glBufferData(GL_ARRAY_BUFFER, NumberOfVertices * sizeof(float), vertices, GL_STATIC_DRAW);
+    GLCall(glBufferData(GL_ARRAY_BUFFER, NumberOfVertices * sizeof(float), vertices, GL_STATIC_DRAW));
 
     // Add the index buffer in CG
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumberOfIndex * sizeof(unsigned int), indexes, GL_STATIC_DRAW);
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumberOfIndex * sizeof(unsigned int), indexes, GL_STATIC_DRAW));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr));
 
     std::string vertexShader = ReadFile("resources/shaders/shader.vert");
     std::string fragmentShader = ReadFile("resources/shaders/shader.frag");
@@ -155,21 +175,21 @@ int main()
         return -1;
     }
 
-    glUseProgram(program.value());
+    GLCall(glUseProgram(program.value()));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        glDrawElements(GL_TRIANGLES, NumberOfIndex, GL_UNSIGNED_INT, nullptr);
+        GLCall(glDrawElements(GL_TRIANGLES, NumberOfIndex, GL_INT, nullptr));
 
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        GLCall(glfwSwapBuffers(window));
 
         /* Poll for and process events */
-        glfwPollEvents();
+        GLCall(glfwPollEvents());
     }
 
     glDeleteProgram(program.value());

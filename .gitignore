@@ -38,3 +38,6 @@
 [Bb]uild/
 [Bb]uilds/
 cmake-build*/
+
+#vs cache
+.vs/
