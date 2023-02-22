@@ -88,10 +88,15 @@ jobs:
       with:
         name: Build-${{ matrix.os }}-${{ matrix.compiler }}
         path: |
+          ${{github.workspace}}/build/Release/resources/shaders/*.frag
+          ${{github.workspace}}/build/Release/resources/shaders/*.vert
           ${{github.workspace}}/build/Release/OpenGL.exe
           ${{github.workspace}}/build/Release/OpenGL
+          ${{github.workspace}}/build/resources/shaders/*.frag
+          ${{github.workspace}}/build/resources/shaders/*.vert
           ${{github.workspace}}/build/OpenGL.exe
           ${{github.workspace}}/build/OpenGL
+        if-no-files-found: error
 
 # Cancel release for now
 #    # Sending build to release
