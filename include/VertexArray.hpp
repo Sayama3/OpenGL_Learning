@@ -7,21 +7,17 @@
 #include "VertexBuffer.hpp"
 #include "VertexBufferLayout.hpp"
 
-namespace Sayama {
-    namespace OpenGLLearning {
+namespace Sayama::OpenGLLearning {
+    class VertexArray {
+    private:
+        unsigned int m_RendererId;
+    public:
+        VertexArray();
 
-        class VertexArray {
-        private:
-            unsigned int m_RendererId;
-        public:
-            VertexArray();
+        ~VertexArray();
 
-            ~VertexArray();
-
-            void AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout);
-            void Bind() const;
-            void Unbind() const;
-        };
-
-    } // Sayama
+        void AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout);
+        void Bind() const;
+        void Unbind() const;
+    };
 } // OpenGLLearning
