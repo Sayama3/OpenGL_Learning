@@ -1,4 +1,4 @@
-name: CMake
+name: Build OpenGL Project
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         compiler: [llvm, gcc]
-# Excluding the combination of gcc and macos as there is some problem from gcc to compile Objective-C
+# Excluding the combination of gcc and macOS as there is some problem from gcc to compile Objective-C
 # https://github.com/glfw/glfw/issues/1743
         exclude:
           - os: macos-latest

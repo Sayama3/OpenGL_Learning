@@ -1,4 +1,5 @@
 # OpenGL Learning
+![](https://github.com/Sayama3/OpenGL_Learning/actions/workflows/cmake.yml/badge.svg)
  
 A little project for me to learn how to make a renderer in OpenGL.
 
