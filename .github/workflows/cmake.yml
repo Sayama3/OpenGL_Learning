@@ -88,6 +88,8 @@ jobs:
       with:
         name: Build-${{ matrix.os }}-${{ matrix.compiler }}
         path: |
+          ${{github.workspace}}/build/Release/OpenGL.exe
+          ${{github.workspace}}/build/Release/OpenGL
           ${{github.workspace}}/build/OpenGL.exe
           ${{github.workspace}}/build/OpenGL
 
