@@ -8,4 +8,6 @@ target_sources(OpenGL PRIVATE
         Display.cpp
         VertexArray.cpp
         VertexBufferLayout.cpp
+        Shader.cpp
+        ShaderProgram.cpp
         )

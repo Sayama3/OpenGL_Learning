@@ -27,6 +27,8 @@ namespace Sayama {
 
             void PollEvents() const;
 
+            void Clear() const;
+
             GLFWwindow *GetWindow() const;
         };
 

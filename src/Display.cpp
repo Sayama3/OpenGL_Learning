@@ -64,4 +64,8 @@ namespace Sayama::OpenGLLearning {
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    void Display::Clear() const {
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    }
 } // OpenGLLearning

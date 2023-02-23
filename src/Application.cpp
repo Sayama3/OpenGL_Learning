@@ -10,6 +10,7 @@
 #include "VertexBuffer.hpp"
 #include "Display.hpp"
 #include "VertexArray.hpp"
+#include "ShaderProgram.hpp"
 
 static std::string ReadFile(const char *path) {
     std::ifstream fileStream(path);
@@ -51,8 +52,7 @@ static std::optional<unsigned int> CompileShader(unsigned int type, const std::s
 /// \param vertexShader the source code of the vertex shader.
 /// \param fragmentShader the source code of the fragment shader.
 /// \return The id of the shader in OpenGL.
-static std::optional<unsigned int>
-CreateShaderProgram(const std::string &vertexShader, const std::string &fragmentShader) {
+static std::optional<unsigned int> CreateShaderProgram(const std::string &vertexShader, const std::string &fragmentShader) {
     GLCall(unsigned int program = glCreateProgram());
 
     std::optional<unsigned int> vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
@@ -89,11 +89,11 @@ int main() {
             -0.5f, 0.5f, //3
     };
 
-    Sayama::OpenGLLearning::VertexArray va;
+    Sayama::OpenGLLearning::VertexArray vertexArray;
     Sayama::OpenGLLearning::VertexBuffer vertexBuffer(vertices,NumberOfVertices * NumberOfParameterPerVertices * sizeof(float));
-    Sayama::OpenGLLearning::VertexBufferLayout vbl;
-    vbl.Push<float>(2);
-    va.AddBuffer(vertexBuffer, vbl);
+    Sayama::OpenGLLearning::VertexBufferLayout layout;
+    layout.Push<float>(2);
+    vertexArray.AddBuffer(vertexBuffer, layout);
 
     const unsigned int NumberOfIndex = 6;
 
@@ -105,20 +105,15 @@ int main() {
 
     Sayama::OpenGLLearning::IndexBuffer indexBuffer(indices, NumberOfIndex);
 
-    std::string vertexShader = ReadFile("resources/shaders/shader.vert");
-    std::string fragmentShader = ReadFile("resources/shaders/shader.frag");
-    std::optional<unsigned int> program = CreateShaderProgram(vertexShader, fragmentShader);
+    Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+    shaderProgram.Bind();
 
-    if (!program.has_value()) {
-        glfwTerminate();
-        return -1;
-    }
+    shaderProgram.SetUniform4f("u_Color", 0.0, 1.0, 0.0, 1.0);
 
-    GLCall(glUseProgram(program.value()));
-
-    GLCall(int colorUniformLocation = glGetUniformLocation(program.value(), "u_Color"));
-    ASSERT(colorUniformLocation != -1);
-    GLCall(glUniform4f(colorUniformLocation, 0.0, 1.0, 0.0, 1.0));
+    vertexArray.Unbind();
+    shaderProgram.Unbind();
+    vertexBuffer.Unbind();
+    indexBuffer.Unbind();
 
     float r = 0.0;
     float increment = 0.05f;
@@ -126,13 +121,12 @@ int main() {
     /* Loop until the user closes the window */
     while (!display.ShouldClose()) {
         /* Render here */
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        display.Clear();
 
-        GLCall(glUseProgram(program.value()));
-        GLCall(glUniform4f(colorUniformLocation, r, 1.0, 0.0, 1.0));
+        shaderProgram.Bind();
+        shaderProgram.SetUniform4f("u_Color", r, 1.0, 0.0, 1.0);
 
-        va.Bind();
-        indexBuffer.Bind();
+        vertexArray.Bind();
 
         GLCall(glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), indexBuffer.GetType(), nullptr));
 
@@ -147,8 +141,6 @@ int main() {
         display.SwapBuffers();
         display.PollEvents();
     }
-
-    glDeleteProgram(program.value());
 
     return 0;
 }
