@@ -108,7 +108,7 @@ int main() {
     Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     shaderProgram.Bind();
 
-    shaderProgram.SetUniform4f("u_Color", 0.0, 1.0, 0.0, 1.0);
+    shaderProgram.SetUniform<float>("u_Color", 0.0, 1.0, 0.0, 1.0);
 
     vertexArray.Unbind();
     shaderProgram.Unbind();
@@ -124,7 +124,7 @@ int main() {
         display.Clear();
 
         shaderProgram.Bind();
-        shaderProgram.SetUniform4f("u_Color", r, 1.0, 0.0, 1.0);
+        shaderProgram.SetUniform<float>("u_Color", r, 1.0, 0.0, 1.0);
 
         vertexArray.Bind();
 

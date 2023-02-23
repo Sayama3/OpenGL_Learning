@@ -35,8 +35,38 @@ namespace Sayama::OpenGLLearning {
         GLCall(glUseProgram(0));
     }
 
-    void ShaderProgram::SetUniform4f(const std::string &name, float v0, float v1, float v2, float v3) {
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, float v0) {
+        GLCall(glUniform1f(GetUniformLocation(name), v0));
+    }
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, float v0, float v1) {
+        GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
+    }
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, float v0, float v1, float v2) {
+        GLCall(glUniform3f(GetUniformLocation(name), v0, v1, v2));
+    }
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, float v0, float v1, float v2, float v3) {
         GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
+    }
+
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, int v0) {
+        GLCall(glUniform1i(GetUniformLocation(name), v0));
+    }
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, int v0, int v1) {
+        GLCall(glUniform2i(GetUniformLocation(name), v0, v1));
+    }
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, int v0, int v1, int v2) {
+        GLCall(glUniform3i(GetUniformLocation(name), v0, v1, v2));
+    }
+    template<>
+    void ShaderProgram::SetUniform(const std::string &name, int v0, int v1, int v2, int v3) {
+        GLCall(glUniform4i(GetUniformLocation(name), v0, v1, v2, v3));
     }
 
     int ShaderProgram::GetUniformLocation(const std::string &name) {

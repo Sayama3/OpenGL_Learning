@@ -20,9 +20,43 @@ namespace Sayama::OpenGLLearning {
             void Bind() const;
             void Unbind() const;
 
-            void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+            template<typename T>
+            inline void SetUniform(const std::string& name, T v0) {
+                ASSERT(false);
+            }
+            template<typename T>
+            inline void SetUniform(const std::string& name, T v0, T v1) {
+                ASSERT(false);
+            }
+            template<typename T>
+            inline void SetUniform(const std::string& name, T v0, T v1, T v2) {
+                ASSERT(false);
+            }
+            template<typename T>
+            inline void SetUniform(const std::string& name, T v0, T v1, T v2, T v3) {
+                ASSERT(false);
+            }
+
         private:
             int GetUniformLocation(const std::string& name);
         };
+
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, float v0);
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, float v0, float v1);
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, float v0, float v1, float v2);
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, float v0, float v1, float v2, float v3);
+
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, int v0);
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, int v0, int v1);
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, int v0, int v1, int v2);
+    template<>
+    void ShaderProgram::SetUniform(const std::string& name, int v0, int v1, int v2, int v3);
 
     } // OpenGLLearning
