@@ -5,7 +5,7 @@
 #include <iostream>
 #include "ShaderProgram.hpp"
 #include "Renderer.hpp"
-#include "ShaderType.hpp"
+#include "Shader.hpp"
 
 namespace Sayama::OpenGLLearning {
     ShaderProgram::ShaderProgram(const std::string &vertexShaderFilePath, const std::string &fragmentShaderFilePath)

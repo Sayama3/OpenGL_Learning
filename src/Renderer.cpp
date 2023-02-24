@@ -3,6 +3,7 @@
 //
 
 #include "Renderer.hpp"
+#include "ErrorHandling.hpp"
 #include <iostream>
 
 void GLClearError() {
@@ -11,9 +12,11 @@ void GLClearError() {
 
 bool GLLogCall(const char *function, const char *file, int line) {
     bool dontHasError = true;
-    while (GLenum error = glGetError() != GL_NO_ERROR) {
+    unsigned int error;
+    while ( ( error = glGetError() ) != Sayama::OpenGLLearning::ErrorType::NoError) {
         dontHasError = false;
-        std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
+        std::cout << "[OpenGL Error] (" << error << ": "<< Sayama::OpenGLLearning::GetErrorName(error) <<"): " << function << " " << file << ":" << line << "\n"
+        << Sayama::OpenGLLearning::GetErrorDescription(error) << std::endl;
     }
     return dontHasError;
 }

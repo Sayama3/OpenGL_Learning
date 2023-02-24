@@ -8,7 +8,7 @@
 #include <string>
 #include <optional>
 #include <stdexcept>
-#include "debug-trap.h"
+#include "vendor/debug-trap.h"
 #include "VertexArray.hpp"
 #include "IndexBuffer.hpp"
 #include "ShaderProgram.hpp"
