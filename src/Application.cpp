@@ -1,9 +1,6 @@
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
-#include <optional>
-#include <string>
 #include <sstream>
 #include "Renderer.hpp"
 #include "IndexBuffer.hpp"
@@ -11,69 +8,6 @@
 #include "Display.hpp"
 #include "VertexArray.hpp"
 #include "ShaderProgram.hpp"
-
-static std::string ReadFile(const char *path) {
-    std::ifstream fileStream(path);
-    std::stringstream file;
-    std::string line;
-    while (std::getline(fileStream, line)) {
-        file << line << "\n";
-    }
-    return file.str();
-}
-
-static std::optional<unsigned int> CompileShader(unsigned int type, const std::string &source) {
-    GLCall(unsigned int id = glCreateShader(type));
-    const char *src = source.c_str();
-    GLCall(glShaderSource(id, 1, &src, nullptr));
-    GLCall(glCompileShader(id));
-
-    //TODO: Error Handling.
-    // Query the result :
-    int result;
-    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
-    if (result == GL_FALSE) {
-        int length;
-        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-        char *message = (char *) alloca(length * sizeof(char));
-        GLCall(glGetShaderInfoLog(id, length, nullptr, message));
-        std::cerr << "Failed to compile "
-                  << (type == GL_VERTEX_SHADER ? "vertex" : (type == GL_FRAGMENT_SHADER ? "fragment" : "a"))
-                  << " shader!" << std::endl;
-        std::cerr << message << std::endl;
-        GLCall(glDeleteShader(id));
-        return {};
-    }
-
-    return id;
-}
-
-/// Create a shader from source code.
-/// \param vertexShader the source code of the vertex shader.
-/// \param fragmentShader the source code of the fragment shader.
-/// \return The id of the shader in OpenGL.
-static std::optional<unsigned int> CreateShaderProgram(const std::string &vertexShader, const std::string &fragmentShader) {
-    GLCall(unsigned int program = glCreateProgram());
-
-    std::optional<unsigned int> vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    std::optional<unsigned int> fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-    if (!vs.has_value() || !fs.has_value()) {
-        return {};
-    }
-
-    GLCall(glAttachShader(program, vs.value()));
-    GLCall(glAttachShader(program, fs.value()));
-
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
-
-    // Delete the shader as we now have created the program.
-    GLCall(glDeleteShader(vs.value()));
-    GLCall(glDeleteShader(fs.value()));
-
-    return program;
-}
 
 int main() {
     Sayama::OpenGLLearning::Display display;
@@ -118,17 +52,18 @@ int main() {
     float r = 0.0;
     float increment = 0.05f;
 
+    Sayama::OpenGLLearning::Renderer renderer;
+
     /* Loop until the user closes the window */
     while (!display.ShouldClose()) {
         /* Render here */
-        display.Clear();
+        renderer.Clear();
 
+        // TODO: To remove this, we have to create Materials (i.e. Shader + data)
         shaderProgram.Bind();
         shaderProgram.SetUniform<float>("u_Color", r, 1.0, 0.0, 1.0);
 
-        vertexArray.Bind();
-
-        GLCall(glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), indexBuffer.GetType(), nullptr));
+        renderer.Draw(vertexArray, indexBuffer, shaderProgram);
 
         if (r >= 1.0f) {
             increment = -0.01;

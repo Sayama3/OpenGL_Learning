@@ -81,4 +81,24 @@ namespace Sayama::OpenGLLearning {
         m_UniformLocationCache[name] = location;
         return location;
     }
+
+    template<typename T>
+    void ShaderProgram::SetUniform(const std::string &name, T v0, T v1, T v2, T v3) {
+        throw std::runtime_error("The T4 element " + name + " is not available.");
+    }
+
+    template<typename T>
+    void ShaderProgram::SetUniform(const std::string &name, T v0, T v1, T v2) {
+        throw std::runtime_error("The T3 element " + name + " is not available.");
+    }
+
+    template<typename T>
+    void ShaderProgram::SetUniform(const std::string &name, T v0, T v1) {
+        throw std::runtime_error("The T2 element " + name + " is not available.");
+    }
+
+    template<typename T>
+    void ShaderProgram::SetUniform(const std::string &name, T v0) {
+        throw std::runtime_error("The T1 element " + name + " is not available.");
+    }
 } // OpenGLLearning

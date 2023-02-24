@@ -4,8 +4,7 @@
 
 #pragma once
 
-namespace Sayama {
-    namespace OpenGLLearning {
+namespace Sayama::OpenGLLearning {
 
         class IndexBuffer {
         private:
@@ -24,5 +23,4 @@ namespace Sayama {
             unsigned int GetCount() const;
         };
 
-    } // Sayama
-} // OpenGLLearning
+    } // OpenGLLearning

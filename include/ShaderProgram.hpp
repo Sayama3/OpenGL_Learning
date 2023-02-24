@@ -9,7 +9,7 @@
 
 namespace Sayama::OpenGLLearning {
 
-        class ShaderProgram {
+    class ShaderProgram {
         private:
             unsigned int m_RendererId;
             std::unordered_map<std::string, int> m_UniformLocationCache;
@@ -21,21 +21,13 @@ namespace Sayama::OpenGLLearning {
             void Unbind() const;
 
             template<typename T>
-            inline void SetUniform(const std::string& name, T v0) {
-                ASSERT(false);
-            }
+            void SetUniform(const std::string& name, T v0);
             template<typename T>
-            inline void SetUniform(const std::string& name, T v0, T v1) {
-                ASSERT(false);
-            }
+            void SetUniform(const std::string& name, T v0, T v1);
             template<typename T>
-            inline void SetUniform(const std::string& name, T v0, T v1, T v2) {
-                ASSERT(false);
-            }
+            void SetUniform(const std::string& name, T v0, T v1, T v2);
             template<typename T>
-            inline void SetUniform(const std::string& name, T v0, T v1, T v2, T v3) {
-                ASSERT(false);
-            }
+            void SetUniform(const std::string& name, T v0, T v1, T v2, T v3);
 
         private:
             int GetUniformLocation(const std::string& name);
