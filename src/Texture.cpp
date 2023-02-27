@@ -6,6 +6,23 @@
 #include "Renderer.hpp"
 #include "vendor/stb/stb_image.h"
 
+//TODO: (src: https://youtu.be/n4k7ANAFsIQ)
+// @cghost4yt il y a 1 an (modifié)
+// Just a small tip if you want stb_image to print out error messages:
+// In the stb_image.cpp file after you have defined "STB_IMAGE_IMPLEMENTATION" you also define "STBI_FAILURE_USERMSG" and then in the Texture.cpp file you could do something similar to this:
+// if (m_LocalBuffer)
+// {
+// 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
+// 	glBindTexture(GL_TEXTURE_2D, 0);
+// 	stbi_image_free(m_LocalBuffer);
+// }
+// else
+// {
+// 	std::cout << "\nError: Failed to load texture" << std::endl;
+// 	std::cout << stbi_failure_reason() << std::endl;
+// 	__debugbreak();
+// }
+
 namespace Sayama {
     namespace OpenGLLearning {
         Texture::Texture(std::string path)
