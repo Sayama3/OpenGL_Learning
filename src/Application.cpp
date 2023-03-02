@@ -10,6 +10,9 @@
 #include "ShaderProgram.hpp"
 #include "Texture.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 int main() {
     Sayama::OpenGLLearning::Display display;
 
@@ -41,9 +44,12 @@ int main() {
 
     Sayama::OpenGLLearning::IndexBuffer indexBuffer(indices, NumberOfIndex);
 
+    // Creating the 4 by 3 aspect ratio projection matrix.
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
     Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     shaderProgram.Bind();
-
+    shaderProgram.SetUniform("u_MVP", proj);
 
     shaderProgram.SetUniform<float>("u_Color", 1.0,1.0,1.0,1.0);
 
