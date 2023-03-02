@@ -6,6 +6,8 @@
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace Sayama {
     namespace OpenGLLearning {
@@ -28,6 +30,16 @@ namespace Sayama {
             void PollEvents() const;
 
             GLFWwindow *GetWindow() const;
+
+            glm::mat4 GetScreenMatrix() const;
+            glm::mat4 GetScreenNormalizedMatrix() const;
+
+            inline float GetNormalizedWidth() const {
+                return static_cast<float>(m_Width) / static_cast<float>(m_Height);
+            }
+            inline float GetNormalizedHeight() const {
+                return 1.0f;
+            }
         };
 
     } // Sayama

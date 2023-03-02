@@ -19,6 +19,7 @@ namespace Sayama::OpenGLLearning {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         /* Create a windowed mode window and its OpenGL context */
         m_Window = glfwCreateWindow(m_Width, m_Height, m_Name, nullptr, nullptr);
@@ -70,5 +71,13 @@ namespace Sayama::OpenGLLearning {
     void Display::PollEvents() const {
         /* Poll for and process events */
         glfwPollEvents();
+    }
+
+    glm::mat4 Display::GetScreenMatrix() const {
+        return glm::ortho(0.0f, static_cast<float>(this->m_Width), 0.0f, static_cast<float>(this->m_Height), 0.0f, 1.0f);
+    }
+
+    glm::mat4 Display::GetScreenNormalizedMatrix() const {
+        return glm::ortho(0.0f, GetNormalizedWidth(), 0.0f,GetNormalizedHeight(), 0.0f,1.0f);
     }
 } // OpenGLLearning

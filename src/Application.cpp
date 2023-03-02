@@ -19,12 +19,14 @@ int main() {
     const unsigned int NumberOfVertices = 4;
     const unsigned int NumberOfParameterPerVertices = 2 + 2;
 
+    float width = display.GetNormalizedWidth();
     // Creating the vertices array
+    float offset = (width - 1.0f) / 2.0f;
     float vertices[NumberOfVertices * NumberOfParameterPerVertices] = {
-            -0.5f, -0.5f, 0.0f,0.0f, //0
-            0.5f, -0.5f, 1.0f,0.0f, //1
-            0.5f, 0.5f, 1.0f,1.0f, //2
-            -0.5f, 0.5f, 0.0f,1.0f,  //3
+            offset, 0.0f, 0.0f,0.0f, //0
+            1.0f+offset, 0.0f, 1.0f,0.0f, //1
+            1.0f+offset, 1.0f, 1.0f,1.0f, //2
+            offset, 1.0f, 0.0f,1.0f,  //3
     };
 
     const unsigned int NumberOfIndex = 6;
@@ -45,7 +47,8 @@ int main() {
     Sayama::OpenGLLearning::IndexBuffer indexBuffer(indices, NumberOfIndex);
 
     // Creating the 4 by 3 aspect ratio projection matrix.
-    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+//    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    glm::mat4 proj = display.GetScreenNormalizedMatrix();
 
     Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     shaderProgram.Bind();
