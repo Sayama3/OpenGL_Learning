@@ -3,9 +3,10 @@
 //
 
 #include "Shader.hpp"
-#include "Renderer.hpp"
+#include "ErrorHandling.hpp"
 #include "SystemHelper.hpp"
 #include <iostream>
+#include "GL/glew.h"
 
 namespace Sayama::OpenGLLearning {
 

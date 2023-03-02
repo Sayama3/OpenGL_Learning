@@ -13,4 +13,5 @@ target_sources(OpenGL PRIVATE
         Shader.cpp
         ShaderProgram.cpp
         Texture.cpp
+        ErrorHandling.cpp
         )

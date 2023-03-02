@@ -2,10 +2,12 @@
 // Created by Sayama on 21/02/2023.
 //
 
-#include "Renderer.hpp"
-#include "Display.hpp"
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
+#include <string>
+#include "ErrorHandling.hpp"
+#include "Display.hpp"
+#include "GL/glew.h"
 
 namespace Sayama::OpenGLLearning {
     Display::Display(const char *name, int width, int height) : m_Name(name), m_Width(width), m_Height(height) {

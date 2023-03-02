@@ -6,6 +6,20 @@
 #define OPENGL_LEARNING_ERRORHANDLING_HPP
 
 #include <GL/glew.h>
+#include <stdexcept>
+#include "vendor/debug-trap.h"
+
+#ifndef PSNIP_NDEBUG
+#define ASSERT(x) if (!(x)) psnip_trap()
+#else
+#define ASSERT(x) if(!(x)) throw std::runtime_error(std::string(#x) + " is false.");
+#endif
+
+#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+void GLClearError();
+
+bool GLLogCall(const char *function = "", const char *file = __FILE__, int line = __LINE__);
 
 namespace Sayama::OpenGLLearning {
     enum ErrorType {

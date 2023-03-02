@@ -3,7 +3,8 @@
 //
 
 #include "VertexArray.hpp"
-#include "Renderer.hpp"
+#include "ErrorHandling.hpp"
+#include "GL/glew.h"
 
 namespace Sayama::OpenGLLearning {
     VertexArray::VertexArray() {

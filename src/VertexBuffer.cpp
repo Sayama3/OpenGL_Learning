@@ -3,7 +3,8 @@
 //
 
 #include "VertexBuffer.hpp"
-#include "Renderer.hpp"
+#include "ErrorHandling.hpp"
+#include "GL/glew.h"
 
 namespace Sayama::OpenGLLearning {
     OpenGLLearning::VertexBuffer::VertexBuffer(const void *data, unsigned int size) {

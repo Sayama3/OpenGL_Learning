@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "ShaderProgram.hpp"
-#include "Renderer.hpp"
+#include "ErrorHandling.hpp"
 #include "Shader.hpp"
 
 namespace Sayama::OpenGLLearning {
