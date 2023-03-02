@@ -7,6 +7,7 @@
 
 #include <GL/glew.h>
 #include <stdexcept>
+#include <string>
 #include "vendor/debug-trap.h"
 
 #ifndef PSNIP_NDEBUG
