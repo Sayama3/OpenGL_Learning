@@ -12,3 +12,7 @@ set(glew-cmake_BUILD_SHARED FALSE)
 set(glew-ONLY_LIBS ON)
 add_subdirectory(glew)
 target_link_libraries(OpenGL PUBLIC libglew_static)
+
+add_subdirectory(glm)
+target_link_libraries(OpenGL PUBLIC glm)
+
