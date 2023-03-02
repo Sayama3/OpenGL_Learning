@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <functional>
 #include "ErrorHandling.hpp"
 #include "Display.hpp"
 #include "GL/glew.h"
@@ -49,6 +50,14 @@ namespace Sayama::OpenGLLearning {
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+        glfwSetWindowUserPointer(this->m_Window, this);
+
+        auto func = [](GLFWwindow* window, int width, int height)
+        {
+            static_cast<Display*>(glfwGetWindowUserPointer(window))->OnWindowResize(width, height);
+        };
+
+        glfwSetWindowSizeCallback(m_Window, func);
     }
 
     Display::~Display() {
@@ -79,5 +88,10 @@ namespace Sayama::OpenGLLearning {
 
     glm::mat4 Display::GetScreenNormalizedMatrix() const {
         return glm::ortho(0.0f, GetNormalizedWidth(), 0.0f,GetNormalizedHeight(), 0.0f,1.0f);
+    }
+
+    void Display::OnWindowResize(int width, int height) {
+        m_Width = width;
+        m_Height = height;
     }
 } // OpenGLLearning

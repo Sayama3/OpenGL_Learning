@@ -40,6 +40,8 @@ namespace Sayama {
             inline float GetNormalizedHeight() const {
                 return 1.0f;
             }
+        private:
+            void OnWindowResize(int width, int height);
         };
 
     } // Sayama
