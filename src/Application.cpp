@@ -19,14 +19,15 @@ int main() {
     const unsigned int NumberOfVertices = 4;
     const unsigned int NumberOfParameterPerVertices = 2 + 2;
 
-    float width = display.GetNormalizedWidth();
-    // Creating the vertices array
-    float offset = (width - 1.0f) / 2.0f;
+    float minDimension = glm::min(display.GetWidth(), display.GetHeight());
+    glm::vec2 size = glm::vec2(minDimension * 0.5f);
+    glm::vec2 halfSize = size * 0.5f;
+    glm::vec2 center = glm::vec2 (display.GetWidth() * 0.5f, display.GetHeight() * 0.5f);
     float vertices[NumberOfVertices * NumberOfParameterPerVertices] = {
-            offset, 0.0f, 0.0f,0.0f, //0
-            1.0f+offset, 0.0f, 1.0f,0.0f, //1
-            1.0f+offset, 1.0f, 1.0f,1.0f, //2
-            offset, 1.0f, 0.0f,1.0f,  //3
+            center.x - halfSize.x, center.y - halfSize.y, 0.0f,0.0f, //0
+            center.x + halfSize.x, center.y - halfSize.y, 1.0f,0.0f, //1
+            center.x + halfSize.x, center.y + halfSize.y, 1.0f, 1.0f, //2
+            center.x - halfSize.x, center.y + halfSize.y, 0.0f,1.0f,  //3
     };
 
     const unsigned int NumberOfIndex = 6;
@@ -46,13 +47,21 @@ int main() {
 
     Sayama::OpenGLLearning::IndexBuffer indexBuffer(indices, NumberOfIndex);
 
-    // Creating the 4 by 3 aspect ratio projection matrix.
-//    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
-    glm::mat4 proj = display.GetScreenNormalizedMatrix();
+
+    // Projection Matrix to go from pixel to camera space.
+    glm::mat4 proj = display.GetScreenMatrix();
+    // View matrix to simulate camera position (i.e. moving camera 100 to the right means moving everything 100 to the left)
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100,0,0));
+    // Model matrix that position (and later on rotate and scale) the object in the scene.
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(50,50,0));
+
+    // Order important, might change depending on the graphical API. In OpenGL it's reverse from the acronym.
+    // Link to the memory layout. In OpenGL it's in column major instead of row layout.
+    glm::mat4 mvp = proj * view * model;
 
     Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     shaderProgram.Bind();
-    shaderProgram.SetUniform("u_MVP", proj);
+    shaderProgram.SetUniform("u_MVP", mvp);
 
     shaderProgram.SetUniform<float>("u_Color", 1.0,1.0,1.0,1.0);
 

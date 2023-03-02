@@ -34,12 +34,17 @@ namespace Sayama {
             glm::mat4 GetScreenMatrix() const;
             glm::mat4 GetScreenNormalizedMatrix() const;
 
+            inline float GetWidth() const { return m_Width; }
+            inline float GetHeight() const { return m_Height; }
+            inline glm::vec2 GetSize() const { return glm::vec2(GetWidth(), GetHeight()); }
+
             inline float GetNormalizedWidth() const {
                 return static_cast<float>(m_Width) / static_cast<float>(m_Height);
             }
             inline float GetNormalizedHeight() const {
                 return 1.0f;
             }
+            inline glm::vec2 GetNormalizedSize() const { return glm::vec2(GetNormalizedWidth(), GetNormalizedHeight()); }
         private:
             void OnWindowResize(int width, int height);
         };
