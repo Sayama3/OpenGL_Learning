@@ -19,6 +19,8 @@ resources/
 ├─ shaders/
 │  ├─ shader.frag
 │  ├─ shader.vert
+├─ textures/
+│  ├─ perfect_kuzco.jpg
 OpenGL.exe
 ```
 
