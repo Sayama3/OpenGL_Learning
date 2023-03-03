@@ -51,20 +51,9 @@ int main() {
     Sayama::OpenGLLearning::IndexBuffer indexBuffer(indices, NumberOfIndex);
 
 
-    // Projection Matrix to go from pixel to camera space.
-    glm::mat4 proj = display.GetScreenMatrix();
-    // View matrix to simulate camera position (i.e. moving camera 100 to the right means moving everything 100 to the left)
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100,0,0));
-    // Model matrix that position (and later on rotate and scale) the object in the scene.
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(50,50,0));
-
-    // Order important, might change depending on the graphical API. In OpenGL it's reverse from the acronym.
-    // Link to the memory layout. In OpenGL it's in column major instead of row layout.
-    glm::mat4 mvp = proj * view * model;
 
     Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     shaderProgram.Bind();
-    shaderProgram.SetUniform("u_MVP", mvp);
 
     shaderProgram.SetUniform<float>("u_Color", 1.0,1.0,1.0,1.0);
 
@@ -78,19 +67,14 @@ int main() {
     vertexBuffer.Unbind();
     indexBuffer.Unbind();
 
-    float r = 0.0;
-    float increment = 0.05f;
-
     Sayama::OpenGLLearning::Renderer renderer;
-
-
     display.InitializeImGUI();
 
-    // Our state
-    bool show_demo_window = true;
-    bool show_another_window = false;
     glm::vec4 color = glm::vec4(0.45f, 0.55f, 0.60f, 1.00f);
     static float alpha = 1.0f;
+
+    glm::vec3 modelTranslation(50,50,0);
+    glm::vec3 cameraTranslation(0,50,0);
 
     /* Loop until the user closes the window */
     while (!display.ShouldClose()) {
@@ -100,50 +84,38 @@ int main() {
 
         // TODO: To remove this, we have to create Materials (i.e. Shader + data)
         shaderProgram.Bind();
+
+        // Projection Matrix to go from pixel to camera space.
+        glm::mat4 proj = display.GetScreenMatrix();
+        // View matrix to simulate camera position (i.e. moving camera 100 to the right means moving everything 100 to the left)
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), -cameraTranslation);
+        // Model matrix that position (and later on rotate and scale) the object in the scene.
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), modelTranslation);
+        // Order important, might change depending on the graphical API. In OpenGL it's reverse from the acronym.
+        // Link to the memory layout. In OpenGL it's in column major instead of row layout.
+        glm::mat4 mvp = proj * view * model;
+
+        shaderProgram.SetUniform("u_MVP", mvp);
         shaderProgram.SetUniform<float>("u_Color", color.x * alpha, color.y * alpha, color.z * alpha, color.w * alpha);
 
         renderer.Draw(vertexArray, indexBuffer, shaderProgram);
 
-        if (r >= 1.0f) {
-            increment = -0.01;
-        } else if (r <= 0.0f) {
-            increment = 0.01;
-        }
-
-        r += increment;
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+        // Our ImGUI Window
         {
-            static int counter = 0;
+            ImGui::Begin("Rendering Parameters");
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::SliderFloat("Alpha", &alpha, 0.0f, 1.0f);
+            ImGui::ColorEdit3("Color", (float*)&color);
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
+            ImGui::NewLine();
 
-            ImGui::SliderFloat("alpha", &alpha, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("color", (float*)&color); // Edit 3 floats representing a color
+            float maxDimension = glm::max(display.GetWidth(), display.GetHeight()) * 0.5f;
+            ImGui::SliderFloat2("Camera Translation", &cameraTranslation.x, -maxDimension, maxDimension);
+            ImGui::SliderFloat2("Picture Translation", &modelTranslation.x, -maxDimension, maxDimension);
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+            ImGui::NewLine();
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
             ImGui::End();
         }
 

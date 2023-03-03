@@ -22,7 +22,11 @@ resources/
 OpenGL.exe
 ```
 
-## Demo
-Here an example of the current state of the project.
+## Demo/
+Here is an example of the current state of the project.
 
 ![](https://raw.githubusercontent.com/Sayama3/OpenGL_Learning/main/README/images/Demo_030323.gif)
+
+Here is example of the translation :
+
+![](https://raw.githubusercontent.com/Sayama3/OpenGL_Learning/main/README/images/Demo_030323_02.gif)
