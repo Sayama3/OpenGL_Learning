@@ -21,7 +21,7 @@ namespace Sayama {
             const char* glsl_version;
             ImGuiIO* io;
         public:
-            Display(const char *name = "window", int width = 640, int height = 480);
+            Display(const char *name = "window", int width = 640, int height = 480, bool allowResize = false);
 
             ~Display();
 

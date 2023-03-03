@@ -20,7 +20,7 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 namespace Sayama::OpenGLLearning {
-    Display::Display(const char *name, int width, int height) :
+    Display::Display(const char *name, int width, int height, bool allowResize) :
     m_Window(nullptr),
     m_Name(name),
     m_Width(width),
@@ -40,6 +40,7 @@ namespace Sayama::OpenGLLearning {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_RESIZABLE, allowResize ? GL_TRUE : GL_FALSE);
 #elif defined(__APPLE__)
         // GL 3.2 + GLSL 150
         glsl_version = "#version 150";
@@ -47,6 +48,7 @@ namespace Sayama::OpenGLLearning {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+        glfwWindowHint(GLFW_RESIZABLE, allowResize ? GL_TRUE : GL_FALSE);
 #else
         // GL 4.6 + GLSL 330
         glsl_version = "#version 330";
@@ -54,6 +56,7 @@ namespace Sayama::OpenGLLearning {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+        glfwWindowHint(GLFW_RESIZABLE, allowResize ? GL_TRUE : GL_FALSE);
 #endif
 
         /* Create a windowed mode window and its OpenGL context */

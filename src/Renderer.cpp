@@ -9,11 +9,9 @@
 namespace Sayama::OpenGLLearning {
 
     void Renderer::Draw(const VertexArray &va, const IndexBuffer &ib, const ShaderProgram &shader) const {
+
         shader.Bind();
-
         va.Bind();
-        ib.Bind();
-
         GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), ib.GetType(), nullptr));
     }
 
