@@ -25,4 +25,4 @@ OpenGL.exe
 ## Demo
 Here an example of the current state of the project.
 
-![](https://raw.githubusercontent.com/Sayama3/OpenGL_Learning/main/README/images/Demo_020323.gif)
+![](https://raw.githubusercontent.com/Sayama3/OpenGL_Learning/main/README/images/Demo_030323.gif)

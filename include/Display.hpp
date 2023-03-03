@@ -18,6 +18,8 @@ namespace Sayama {
             const char *m_Name;
             int m_Width;
             int m_Height;
+            const char* glsl_version;
+            ImGuiIO* io;
         public:
             Display(const char *name = "window", int width = 640, int height = 480);
 
@@ -25,9 +27,9 @@ namespace Sayama {
 
             bool ShouldClose() const;
 
-            void SwapBuffers() const;
-
-            void PollEvents() const;
+            void InitializeImGUI();
+            void BeginFrame() const;
+            void EndFrame() const;
 
             GLFWwindow *GetWindow() const;
 

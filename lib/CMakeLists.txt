@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.24)
 project(OpenGL_Learning)
 
 add_subdirectory(glfw)
-
 target_link_libraries(OpenGL PUBLIC glfw)
+
 find_package(OpenGL REQUIRED)
 target_link_libraries(OpenGL PUBLIC OpenGL::GL)
 
@@ -16,3 +16,9 @@ target_link_libraries(OpenGL PUBLIC libglew_static)
 add_subdirectory(glm)
 target_link_libraries(OpenGL PUBLIC glm)
 
+add_subdirectory(imgui)
+target_link_libraries(OpenGL PUBLIC imgui)
+target_include_directories(OpenGL PUBLIC
+        "${PROJECT_BINARY_DIR}"
+        "${PROJECT_SOURCE_DIR}/imgui"
+        )
