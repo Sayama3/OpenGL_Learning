@@ -1,9 +1,16 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <algorithm>
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "Renderer.hpp"
 #include "IndexBuffer.hpp"
 #include "VertexBuffer.hpp"
@@ -11,13 +18,13 @@
 #include "VertexArray.hpp"
 #include "ShaderProgram.hpp"
 #include "Texture.hpp"
+#include "Mesh.hpp"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+using namespace Sayama::OpenGLLearning;
 
 
 int main() {
-    Sayama::OpenGLLearning::Display display("OpenGL Window", 980, 480);
+    Display display("OpenGL Window", 980, 480);
 
     const unsigned int NumberOfVertices = 4;
     const unsigned int NumberOfParameterPerVertices = 2 + 2;
@@ -39,24 +46,24 @@ int main() {
             2, 3, 0
     };
 
-    Sayama::OpenGLLearning::VertexArray vertexArray;
-    Sayama::OpenGLLearning::VertexBuffer vertexBuffer(vertices,NumberOfVertices * NumberOfParameterPerVertices * sizeof(float));
-    Sayama::OpenGLLearning::VertexBufferLayout layout;
+    VertexArray vertexArray;
+    VertexBuffer vertexBuffer(vertices,NumberOfVertices * NumberOfParameterPerVertices * sizeof(float));
+    VertexBufferLayout layout;
     layout.Push<float>(2);
     layout.Push<float>(2);
     vertexArray.AddBuffer(vertexBuffer, layout);
 
 
-    Sayama::OpenGLLearning::IndexBuffer indexBuffer(indices, NumberOfIndex);
+    IndexBuffer indexBuffer(indices, NumberOfIndex);
 
 
 
-    Sayama::OpenGLLearning::ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+    ShaderProgram shaderProgram("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     shaderProgram.Bind();
 
     shaderProgram.SetUniform<float>("u_Color", 1.0,1.0,1.0,1.0);
 
-    Sayama::OpenGLLearning::Texture texture("resources/textures/perfect_kuzco.jpg");
+    Texture texture("resources/textures/perfect_kuzco.jpg");
 
     texture.Bind(0);
     shaderProgram.SetUniform("u_Texture", 0);
@@ -66,7 +73,7 @@ int main() {
     vertexBuffer.Unbind();
     indexBuffer.Unbind();
 
-    Sayama::OpenGLLearning::Renderer renderer;
+    Renderer renderer;
     display.InitializeImGUI();
 
 //    glm::vec4 color = glm::vec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -78,7 +85,6 @@ int main() {
 
     /* Loop until the user closes the window */
     while (!display.ShouldClose()) {
-        /* Render here */
         renderer.Clear();
         display.BeginFrame();
 
