@@ -53,4 +53,30 @@ namespace Sayama::OpenGLLearning {
         m_Elements.push_back({GL_BYTE, count, GL_TRUE});
         m_Stride += VertexBufferElement::GetSizeOfType(GL_BYTE) * count;
     }
+
+    template<>
+    void VertexBufferLayout::Push<glm::vec2>(unsigned int count) {
+        Push<float>(count * 2); // vec2 = 2 float.
+    }
+    template<>
+    void VertexBufferLayout::Push<glm::vec3>(unsigned int count) {
+        Push<float>(count * 3); // vec3 = 3 float.
+    }
+    template<>
+    void VertexBufferLayout::Push<glm::vec4>(unsigned int count) {
+        Push<float>(count * 4); // vec4 = 4 float.
+    }
+
+    template<>
+    void VertexBufferLayout::Push<glm::ivec2>(unsigned int count) {
+        Push<int>(count * 2); // ivec2 = 2 int.
+    }
+    template<>
+    void VertexBufferLayout::Push<glm::ivec3>(unsigned int count) {
+        Push<int>(count * 3); // ivec3 = 3 int.
+    }
+    template<>
+    void VertexBufferLayout::Push<glm::ivec4>(unsigned int count) {
+        Push<int>(count * 4); // ivec4 = 4 int.
+    }
 } // OpenGLLearning

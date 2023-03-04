@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdexcept>
 #include "GL/glew.h"
+#include "glm/glm.hpp"
 
 namespace Sayama::OpenGLLearning {
 
@@ -51,4 +52,18 @@ namespace Sayama::OpenGLLearning {
 
     template<>
     void VertexBufferLayout::Push<char>(unsigned int count);
+
+    template<>
+    void VertexBufferLayout::Push<glm::vec2>(unsigned int count);
+    template<>
+    void VertexBufferLayout::Push<glm::vec3>(unsigned int count);
+    template<>
+    void VertexBufferLayout::Push<glm::vec4>(unsigned int count);
+
+    template<>
+    void VertexBufferLayout::Push<glm::ivec2>(unsigned int count);
+    template<>
+    void VertexBufferLayout::Push<glm::ivec3>(unsigned int count);
+    template<>
+    void VertexBufferLayout::Push<glm::ivec4>(unsigned int count);
 } // OpenGLLearning

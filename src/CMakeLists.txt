@@ -14,4 +14,7 @@ target_sources(OpenGL PRIVATE
         ShaderProgram.cpp
         Texture.cpp
         ErrorHandling.cpp
+        Mesh.cpp
+        Triangle.cpp
+        Vertex.cpp
         )
