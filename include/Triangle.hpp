@@ -11,8 +11,12 @@ namespace Sayama::OpenGLLearning {
 
     struct Triangle {
         static const unsigned int VertexPerTriangle = 3;
+        struct Vertex vertices[VertexPerTriangle];
 
-        struct Vertex vertices[3];
+        Triangle();
+        Triangle(const struct Vertex& v1);
+        Triangle(const struct Vertex& v1, const struct Vertex& v2);
+        Triangle(const struct Vertex& v1, const struct Vertex& v2, const struct Vertex& v3);
 
         bool Equal(const Triangle &other) const;
 

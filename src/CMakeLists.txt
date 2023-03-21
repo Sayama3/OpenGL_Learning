@@ -17,4 +17,5 @@ target_sources(OpenGL PRIVATE
         Mesh.cpp
         Triangle.cpp
         Vertex.cpp
+        Camera.cpp
         )

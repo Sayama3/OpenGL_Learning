@@ -8,48 +8,49 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "imgui.h"
 
-namespace Sayama {
-    namespace OpenGLLearning {
+namespace Sayama::OpenGLLearning {
 
-        class Display {
-        private:
-            GLFWwindow *m_Window;
-            const char *m_Name;
-            int m_Width;
-            int m_Height;
-            const char* glsl_version;
-            ImGuiIO* io;
-        public:
-            Display(const char *name = "window", int width = 640, int height = 480, bool allowResize = false);
+	class Display {
+	private:
+		GLFWwindow *m_Window;
+		const char *m_Name;
+		int m_Width;
+		int m_Height;
+		const char* glsl_version;
+		ImGuiIO* io;
+	public:
+		Display(const char *name = "window", int width = 640, int height = 480, bool allowResize = false);
 
-            ~Display();
+		~Display();
 
-            bool ShouldClose() const;
+		bool ShouldClose() const;
 
-            void InitializeImGUI();
-            void BeginFrame() const;
-            void EndFrame() const;
+		void InitializeImGUI();
+		void BeginFrame() const;
+		void EndFrame() const;
 
-            GLFWwindow *GetWindow() const;
+		GLFWwindow *GetWindow() const;
 
-            glm::mat4 GetScreenMatrix() const;
-            glm::mat4 GetScreenNormalizedMatrix() const;
+		glm::mat4 GetScreenMatrix() const;
+		glm::mat4 GetScreenNormalizedMatrix() const;
 
-            inline float GetWidth() const { return m_Width; }
-            inline float GetHeight() const { return m_Height; }
-            inline glm::vec2 GetSize() const { return glm::vec2(GetWidth(), GetHeight()); }
+		inline float GetWidth() const { return m_Width; }
+		inline float GetHeight() const { return m_Height; }
+		inline glm::vec2 GetSize() const { return glm::vec2(GetWidth(), GetHeight()); }
 
-            inline float GetNormalizedWidth() const {
-                return static_cast<float>(m_Width) / static_cast<float>(m_Height);
-            }
-            inline float GetNormalizedHeight() const {
-                return 1.0f;
-            }
-            inline glm::vec2 GetNormalizedSize() const { return glm::vec2(GetNormalizedWidth(), GetNormalizedHeight()); }
-        private:
-            void OnWindowResize(int width, int height);
-        };
+		inline float GetAspectRatio() const { return static_cast<float>(m_Width) / static_cast<float>(m_Height); }
 
-    } // Sayama
+		inline float GetNormalizedWidth() const {
+			return GetAspectRatio();
+		}
+		inline float GetNormalizedHeight() const {
+			return 1.0f;
+		}
+		inline glm::vec2 GetNormalizedSize() const { return glm::vec2(GetNormalizedWidth(), GetNormalizedHeight()); }
+	private:
+		void OnWindowResize(int width, int height);
+	};
+
 } // OpenGLLearning

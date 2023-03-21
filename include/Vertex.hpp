@@ -13,8 +13,12 @@ namespace Sayama::OpenGLLearning {
         struct Vertex {
         public:
             glm::vec3 position;
-            // TODO: Add normal for the lightning
+            // TODO: Add normal for the lightning and other stuffs.
         public:
+            Vertex();
+            Vertex(glm::vec3 position);
+            Vertex(float x, float y, float z);
+
             bool Equal(const Vertex& other) const;
 
             bool operator==(const Vertex& other) const;
