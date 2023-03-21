@@ -19,26 +19,19 @@ namespace Sayama::OpenGLLearning {
 	}
 
 	glm::mat4x4 Camera::GetProjectionMatrix() const {
-
+		// Prefer this version for now.
 		return glm::perspective(GetRadiansFOV(),m_Display.GetAspectRatio(),m_ZNear, m_ZFar);
 //		float a = m_Display.GetAspectRatio();
 //		float f = GetFOVScalingFactor();
-//		float zNear = GetZNear();
+//		float zNear = m_ZNear;
 //		float q = GetNormalizedZ();
-//		glm::mat4x4 projectionMatrix {
-//				{
-//						a*f, 0, 0, 0,
-//				},
-//				{
-//						0, f, 0, 0,
-//				},
-//				{
-//						0, 0, q, -zNear*q,
-//				},
-//				{
-//						0,0,1,0
-//				}
-//		};
+//		glm::mat4x4 projectionMatrix(0);
+//		projectionMatrix[0][0] = f*a;
+//		projectionMatrix[1][1] = f;
+//		projectionMatrix[2][2] = q;
+//		projectionMatrix[2][3] = -zNear*q;
+//		// Supposed to divide the result with w. but... Not really sure...
+//		projectionMatrix[3][2] = 1;
 //		return projectionMatrix;
 	}
 } // OpenGLLearning
